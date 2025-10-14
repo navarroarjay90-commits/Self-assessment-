@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Assessment - Pre-Assessment</title>
+    <style>
+      body{font-family:Arial,Helvetica,sans-serif;background:#f6f7f9;margin:0;padding:20px}
+      .card{max-width:720px;margin:20px auto;background:#fff;padding:18px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,0.06)}
+      h1{margin:0 0 12px}
+      .muted{color:#6b7280}
+      .btn{background:#ff6b35;color:#fff;border:none;padding:10px 14px;border-radius:8px;cursor:pointer}
+      .row{display:flex;gap:12px}
+      @media (max-width:600px){.row{flex-direction:column}}
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Pre-Assessment (COC1-4)</h1>
+      
+      <p class="muted">Assess yourself on each item below.</p>
+      <form id="assessment-form">
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px">
+          <div>
+            <label>COC1: Do you enjoy working with computers / solving logical problems?</label>
+            <div><label><input type="radio" name="coc1" value="yes"> Yes</label> <label><input type="radio" name="coc1" value="no"> No</label></div>
+          </div>
+          <div>
+            <label>COC2: Do you like building or understanding how apps and websites work?</label>
+            <div><label><input type="radio" name="coc2" value="yes"> Yes</label> <label><input type="radio" name="coc2" value="no"> No</label></div>
+          </div>
+          <div>
+            <label>COC3: Are you comfortable with math or structured step-by-step tasks?</label>
+            <div><label><input type="radio" name="coc3" value="yes"> Yes</label> <label><input type="radio" name="coc3" value="no"> No</label></div>
+          </div>
+          <div>
+            <label>COC4: Do you enjoy learning new technology and tools quickly?</label>
+            <div><label><input type="radio" name="coc4" value="yes"> Yes</label> <label><input type="radio" name="coc4" value="no"> No</label></div>
+          </div>
+        </div>
+        <div style="margin-top:12px;text-align:right"><button class="btn" type="submit">Get Recommendation</button></div>
+      </form>
+      <div id="result" style="margin-top:16px;display:none"></div>
+    </div>
+
+    <!-- PDF.js from CDN will be used in-browser to extract questions from local PDFs and populate the assessment form -->
+    <script>
+      (function(){
+        const cocCount = 4;
+        const perCOC = 20;
+        const form = document.querySelector('#assessment-form');
+        const result = document.querySelector('#result');
+
+        // Fixed question sets (20 each) for COC1..COC4
+        const questions = [
+          // COC1
+          [
+            "I can identify basic computer hardware components (CPU, RAM, storage).",
+            "I can install or uninstall simple desktop applications.",
+            "I can organize files and folders and use meaningful names.",
+            "I can troubleshoot common startup or connectivity issues.",
+            "I can use the operating system’s search and file restore features.",
+            "I can back up my important files to an external drive or cloud.",
+            "I follow basic security habits (strong passwords, lock screen).",
+            "I can connect to Wi‑Fi and switch networks when needed.",
+            "I can use an office suite for basic tasks (word, spreadsheet, slides).",
+            "I can copy, move and compress files (zip/unzip).",
+            "I can interpret simple error messages and take next steps.",
+            "I can install a printer and print documents.",
+            "I can take screenshots and save them for sharing.",
+            "I can manage basic user accounts or change my account settings.",
+            "I can use browser bookmarks, tabs, and basic privacy settings.",
+            "I can perform a web search and evaluate if results are trustworthy.",
+            "I can update software and the operating system when prompted.",
+            "I can use email effectively (attach files, organize inbox, reply/forward).",
+            "I can set up and use a basic video call (camera/mic/test).",
+            "I am comfortable learning a new desktop application with minimal help."
+          ],
+          // COC2
+          [
+            "I can describe the difference between a website and a web application.",
+            "I understand basic HTML structure (head, body, tags).",
+            "I can write or edit simple HTML to change text and images.",
+            "I can apply basic CSS to change colors, fonts, and layout.",
+            "I can inspect a web page and identify elements using browser dev tools.",
+            "I can create a simple interactive page using JavaScript (e.g., button click).",
+            "I know how client and server interact (requests and responses).",
+            "I can publish a simple static website (upload files to a host).",
+            "I can use a version control system at a basic level (commit/push).",
+            "I can debug common HTML/CSS layout problems (spacing, alignment).",
+            "I can use templates or site builders to prototype a page quickly.",
+            "I can test a page on desktop and mobile and notice differences.",
+            "I can collect user input on a form and validate required fields.",
+            "I can explain what an API does and how to call one at a basic level.",
+            "I can use a framework or library example and adapt it for my needs.",
+            "I can optimize images and assets for faster page load.",
+            "I understand accessibility basics (alt text, readable contrast).",
+            "I can secure a simple web form from basic mistakes (not exposing secrets).",
+            "I can deploy a small app to a shared hosting or free cloud service.",
+            "I enjoy building small web projects or automations."
+          ],
+          // COC3
+          [
+            "I enjoy solving step‑by‑step or logical puzzles.",
+            "I can break a complex problem into smaller tasks.",
+            "I can follow an algorithm or set of instructions without getting lost.",
+            "I am comfortable using basic arithmetic and formulas when needed.",
+            "I can read and interpret simple charts and tables of data.",
+            "I can use spreadsheets for calculations and sorting data.",
+            "I can test a solution and verify it produces expected results.",
+            "I can identify and fix simple logical mistakes in a process.",
+            "I can reason about sequences and order of operations.",
+            "I can estimate resources (time, steps) for a small task.",
+            "I can design and follow a simple flowchart for a process.",
+            "I can compare multiple approaches and choose the simplest.",
+            "I can use conditional logic (if/else) in a script or formula.",
+            "I can interpret pseudo‑code or a simple program and explain what it does.",
+            "I am comfortable with repetitive tasks that require accuracy.",
+            "I can validate input and handle unexpected or missing data.",
+            "I can use debugging steps to isolate where a problem occurs.",
+            "I can apply patterns or templates to similar problems.",
+            "I can measure outcomes and refine solutions over time.",
+            "I enjoy learning new problem‑solving techniques and tools."
+          ],
+          // COC4
+          [
+            "I learn new software quickly when given documentation or examples.",
+            "I can search and use online tutorials to solve technical tasks.",
+            "I am comfortable installing and configuring development tools.",
+            "I actively update my skills with short courses or online resources.",
+            "I can adapt when a tool or workflow changes at work or school.",
+            "I can read technical documentation and apply it step‑by‑step.",
+            "I can join an online community (forum/StackOverflow) and find answers.",
+            "I can experiment safely in a sandbox environment to learn features.",
+            "I can evaluate multiple tools and select one for a task.",
+            "I can set up and run small scripts or utilities to automate work.",
+            "I can learn by copying an example and then modifying it.",
+            "I’m comfortable asking peers for help when stuck.",
+            "I can keep track of updates and new versions of tools I use.",
+            "I can troubleshoot installations and dependency issues.",
+            "I can follow security best practices when learning new tech.",
+            "I can document steps I took to learn or configure something.",
+            "I can onboard another person by walking them through a tool.",
+            "I can manage multiple learning resources and prioritize them.",
+            "I prefer hands‑on learning (doing) rather than only reading.",
+            "I feel confident trying emerging technologies even if unfamiliar."
+          ]
+        ];
+
+        // Render multiple-choice (a-d) for each question
+        function renderQuestions(){
+          const container = form.querySelector('div');
+          container.innerHTML = '';
+          for(let c=0;c<cocCount;c++){
+            const section = document.createElement('div');
+            section.innerHTML = `<h4 style="margin:6px 0">COC${c+1}</h4>`;
+            const qs = questions[c];
+            for(let i=0;i<perCOC;i++){
+              const qidx = i+1;
+              const id = `coc${c+1}_q${qidx}`;
+              const wrapper = document.createElement('div');
+              wrapper.style.marginBottom = '10px';
+              // Build 4 options: a) Strongly Disagree b) Disagree c) Agree d) Strongly Agree
+              wrapper.innerHTML = `
+                <div style="margin-bottom:6px"><strong>${qidx}. ${qs[i]}</strong></div>
+                <label style="margin-right:12px"><input required type="radio" name="${id}" value="a"> a) Strongly Disagree</label>
+                <label style="margin-right:12px"><input required type="radio" name="${id}" value="b"> b) Disagree</label>
+                <label style="margin-right:12px"><input required type="radio" name="${id}" value="c"> c) Agree</label>
+                <label style="margin-right:12px"><input required type="radio" name="${id}" value="d"> d) Strongly Agree</label>
+              `;
+              section.appendChild(wrapper);
+            }
+            container.appendChild(section);
+          }
+        }
+
+        // progress tracking counts answered questions
+        function updateProgress(){
+          const total = cocCount * perCOC;
+          const answered = Array.from(form.querySelectorAll('input[type=radio]'))
+            .filter(el=> el.checked)
+            .map(el=> el.name)
+            .filter((v,i,arr)=> arr.indexOf(v)===i).length;
+          const pct = Math.round((answered/total)*100);
+          let bar = document.querySelector('#assess-progress');
+          if(!bar){
+            bar = document.createElement('div');
+            bar.id = 'assess-progress';
+            bar.style.marginTop = '10px';
+            bar.innerHTML = `<div style="height:10px;background:#eee;border-radius:999px;overflow:hidden"><div id="assess-progress-fill" style="height:10px;width:${pct}%;background:#ff6b35"></div></div><div style="font-size:13px;color:#666;margin-top:6px">${answered} / ${total} answered</div>`;
+            form.parentNode.insertBefore(bar, result);
+          } else {
+            const fill = document.querySelector('#assess-progress-fill'); if(fill) fill.style.width = pct + '%';
+            bar.querySelector('div:last-child').innerText = `${answered} / ${total} answered`;
+          }
+        }
+
+        // collect answers and store numeric scoring (map a->0, b->1, c->2, d->3)
+        function collectAndStore(){
+          const data = new FormData(form);
+          const results = { totalQuestions: cocCount*perCOC, answered:0, scores: {}, timestamp: Date.now() };
+          let totalScore = 0;
+          for(let c=1;c<=cocCount;c++){
+            let score = 0, answeredCount = 0;
+            for(let q=1;q<=perCOC;q++){
+              const name = `coc${c}_q${q}`;
+              const val = data.get(name);
+              if(val){
+                answeredCount++;
+                const map = { a:0, b:1, c:2, d:3 };
+                score += (map[val] || 0);
+                totalScore += (map[val] || 0);
+              }
+            }
+            results.scores[`coc${c}`] = score;
+            results[`answered_coc${c}`] = answeredCount;
+          }
+          results.answered = Object.values(results).filter(v=> typeof v === 'number' && v<=perCOC && v>0).reduce((a,b)=>a+b,0);
+          results.totalScore = totalScore;
+          localStorage.setItem('assessmentResults', JSON.stringify(results));
+          return results;
+        }
+
+        renderQuestions();
+        form.addEventListener('change', updateProgress);
+        updateProgress();
+        form.addEventListener('submit', (e)=>{
+          e.preventDefault();
+          collectAndStore();
+          window.location.href = 'course-tracks.html';
+        });
+      })();
+    </script>
+    
+  </body>
+</html>

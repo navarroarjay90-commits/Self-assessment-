@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Course Tracks - Recommendations</title>
+    <style>
+      body{font-family:Arial,Helvetica,sans-serif;background:#f6f7f9;margin:0;padding:20px}
+      .card{max-width:920px;margin:20px auto;background:#fff;padding:18px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,0.06)}
+      .muted{color:#6b7280}
+      .track{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;border:1px solid #f0f0f0;margin-top:8px}
+      .btn{background:#ff6b35;color:#fff;border:none;padding:10px 14px;border-radius:8px;cursor:pointer}
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Recommended Course Tracks</h1>
+      <p class="muted">Based on your pre-assessment results.</p>
+      <div id="progressArea" style="margin-top:12px"></div>
+      <h3 style="margin-top:16px">Top recommended tracks</h3>
+      <div id="tracks"></div>
+      <p style="margin-top:12px"><a href="explore-ict.html" class="btn">Explore ICT track</a></p>
+      <p style="margin-top:8px"><a href="dashboard.html">Back to dashboard</a></p>
+    </div>
+    <div class="card">
+      <h3 style="margin:0">Pasig schools offering ICT / Computer-related courses</h3>
+      <p class="muted" style="margin-top:6px">Click a school to open its location on Google Maps.</p>
+      <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+        <div class="track"><div>
+          <strong>University of Asia and the Pacific (UA&P) - Pasig</strong>
+          <div class="muted">Undergraduate programs in Information Technology / Computer Science</div>
+          <div class="muted" style="font-size:13px;margin-top:6px">Address: 95 General Luna St, Sampaloc, Pasig, 1601 Metro Manila, Philippines</div>
+        </div><div><a class="btn" target="_blank" href="https://www.google.com/maps/place/University+of+Asia+and+the+Pacific/@14.5739,121.0759,17z">Map</a></div></div>
+
+        <div class="track"><div>
+          <strong>St. Paul University Pasig</strong>
+          <div class="muted">Offers IT-related diploma and short courses</div>
+          <div class="muted" style="font-size:13px;margin-top:6px">Address: 26 Shaw Blvd, Brgy. San Antonio, Pasig, 1600 Metro Manila, Philippines</div>
+        </div><div><a class="btn" target="_blank" href="https://www.google.com/maps/place/St.+Paul+University+Pasig/@14.5772,121.0621,17z">Map</a></div></div>
+
+        <div class="track"><div>
+          <strong>Philippine Christian University - Pasig (PCU Pasig)</strong>
+          <div class="muted">Computer and information technology programs</div>
+          <div class="muted" style="font-size:13px;margin-top:6px">Address: Shaw Blvd, Brgy. Oranbo, Pasig, 1605 Metro Manila, Philippines</div>
+        </div><div><a class="btn" target="_blank" href="https://www.google.com/maps/place/Philippine+Christian+University+Pasig/@14.5764,121.0708,17z">Map</a></div></div>
+
+        <div class="track"><div>
+          <strong>PATTS College of Aeronautics (Pasig campus)</strong>
+          <div class="muted">Also offers technical and IT-support related courses</div>
+          <div class="muted" style="font-size:13px;margin-top:6px">Address: 289 Shaw Blvd, Brgy. United, Pasig, 1603 Metro Manila, Philippines</div>
+        </div><div><a class="btn" target="_blank" href="https://www.google.com/maps/place/PATTS+College+of+Aeronautics/@14.5810,121.0557,17z">Map</a></div></div>
+      </div>
+    </div>
+    <script>
+      const data = JSON.parse(localStorage.getItem('assessmentResults') || '{}');
+      const total = data.totalQuestions || 80;
+      const answered = data.answered || 0;
+      const totalYes = data.totalYes || 0;
+      const pct = Math.round((answered/total)*100);
+      document.querySelector('#progressArea').innerHTML = `<div style="height:12px;background:#eee;border-radius:999px;overflow:hidden"><div style="height:12px;width:${pct}%;background:#ff6b35"></div></div><div style="font-size:13px;color:#666;margin-top:8px">${answered} / ${total} answered (${pct}%)</div>`;
+      // simple ranking: ICT if totalYes >= total*0.5 else suggest other tracks
+      const tracks = document.querySelector('#tracks');
+      if(totalYes >= Math.ceil(total*0.5)){
+        tracks.innerHTML = `<div class="track"><div>
+          <strong>ICT</strong><div class="muted">Computer Science / Information Technology</div>
+        </div><div><a href="explore-ict.html" class="btn">Explore</a></div></div>`;
+      } else {
+        tracks.innerHTML = `<div class="track"><div>
+          <strong>General Technology</strong><div class="muted">Start with introductory ICT modules or vocational tech.</div>
+        </div><div><a href="explore-ict.html" class="btn">Explore ICT</a></div></div>`;
+      }
+    </script>
+  </body>
+</html>

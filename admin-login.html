@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin Login</title>
+    <style>
+      body{font-family:Arial,Helvetica,sans-serif;background:#f6f7f9;margin:0;padding:20px}
+      .card{max-width:420px;margin:80px auto;background:#fff;padding:18px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,0.06)}
+      .btn{background:#111827;color:#fff;border:none;padding:10px 14px;border-radius:8px;cursor:pointer}
+      label{display:block;margin-top:8px}
+      input{width:100%;padding:8px;margin-top:6px;border-radius:6px;border:1px solid #ddd}
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h2 style="margin:0">Admin Login</h2>
+      <p class="muted">Enter admin credentials to view student progress.</p>
+      <form id="admin-form" style="margin-top:12px">
+        <label>Username<input id="admin-user" value="admin"></label>
+        <label>Password<input id="admin-pass" type="password" value="admin123"></label>
+        <div style="text-align:right;margin-top:12px"><button class="btn" type="submit">Sign in</button></div>
+      </form>
+      <div id="msg" style="margin-top:10px;color:#b91c1c;display:none"></div>
+    </div>
+
+    <script>
+      const form = document.getElementById('admin-form');
+      const msg = document.getElementById('msg');
+      form.addEventListener('submit', (e)=>{
+        e.preventDefault();
+        const user = document.getElementById('admin-user').value.trim();
+        const pass = document.getElementById('admin-pass').value;
+        if(user === 'admin' && pass === 'admin123'){
+          window.location.href = 'admin.html';
+        } else {
+          msg.style.display = 'block'; msg.innerText = 'Invalid credentials';
+        }
+      });
+    </script>
+  </body>
+</html>

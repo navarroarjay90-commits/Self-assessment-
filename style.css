@@ -1,0 +1,297 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: url(NEW.jpg) no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+
+header {
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    padding: 20px 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 99;
+}
+
+.logo {
+    font-size: 2em;
+    color:#fff;
+    user-select: none;
+}
+
+.navigation a {
+    position:relative;
+    font-size: 1.1em;
+    color: #fff;
+    text-decoration:none;
+    font-weight: 500;
+    margin-left: 40px;
+
+}
+
+.navigation a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 100%;
+    height: 3px;
+    background: #fff;
+    border-radius: 5px;
+    transform-origin: right;
+    transform: scaleX(0);
+    transition: transform .5s;
+}
+
+.navigation a:hover:after {
+    transform-origin: left;
+    transform: scaleX(1);
+}
+
+.navigation .btnLogin-popup {
+    width: 130px;
+    height: 50px;
+    background: transparent;
+    border: 2px solid #fff;
+    outline: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.1em;
+    color: #fff;
+   font-weight: 300;
+    margin-left: 40px;
+    transition: .5s;
+}
+
+.navigation .btnLogin-popup:hover {
+    background: #fff;
+    color:#162938;
+}
+
+.wrapper {
+    position: relative;
+    width: 400px;
+    height: 440px;
+    background: transparent;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255,255,255,0.1);
+    box-shadow: 0 0 40px rgba(8,7,16,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* popup hidden by default until triggered */
+.wrapper{
+    display: none; /* hidden until .show-popup is added */
+}
+
+.wrapper.show-popup{
+    display: flex;
+}
+
+/* form animation: all form-boxes are stacked and we toggle .active */
+.form-box{
+    position: absolute;
+    width: 360px;
+    padding: 20px 30px;
+    transition: opacity .35s ease, transform .35s ease;
+    opacity: 0;
+    transform: translateX(30px);
+    pointer-events: none;
+}
+
+.form-box.login{
+    transform: translateX(-30px); /* slightly left by default */
+}
+
+.form-box.active{
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+.form-box h2{
+    font-size: 2em;
+    color:#fff;
+    text-align: center;
+}
+
+/* make register hidden by default inside the wrapper */
+
+
+.input-box {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    border-bottom: 2px solid #fff;
+    margin: 30px 0;
+}
+
+.input-box label {
+    position: absolute;
+    top:50%;
+    left: 5px;
+    color:#fff;
+    font-size: 1em;
+    font-size: 500;
+    pointer-events: none;
+    transform: translateY(-50%);
+    transition: all .25s ease;
+}
+
+.input-box input {
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.04); /* subtle input background */
+    border:none;
+    outline: none;
+    font-size: 1em;
+    color:#fff; /* keep typed text white for contrast */
+    font-weight: 600;
+    padding:0 35px 0 8px;
+    transition: background .18s ease, color .18s ease;
+}
+
+.input-box .icon {
+    position: absolute;
+    top:50%;
+    right: 8px;
+    color:#fff;
+    font-size: 1.2em;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+input:focus ~ label,
+input:valid ~ label {
+    top:-5px;
+    font-size: 0.8em;
+    color:#fff;
+}
+
+/* float label & icon when input has value (filled) or on focus */
+.input-box.filled label,
+.input-box input:focus ~ label {
+    top:-5px;
+    font-size: 0.8em;
+    color:#fff;
+}
+
+.input-box .icon{
+    transition: all .22s ease;
+}
+
+.input-box.filled .icon,
+.input-box input:focus ~ .icon{
+    transform: translateY(-140%);
+    right: 8px;
+}
+
+/* keep background subtle when focused/filled (avoid white box) */
+.input-box.filled input,
+.input-box input:focus{
+    background: rgba(255,255,255,0.10);
+    color: #fff;
+}
+
+/* remember me and forgot password layout */
+.remember-forgot{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 10px 0 20px 0;
+    width: 100%;
+    color: #fff;
+}
+
+.remember-forgot .remember{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95em;
+}
+
+.remember-forgot input[type="checkbox"]{
+    width: 16px;
+    height: 16px;
+    accent-color: #fff; /* modern browsers */
+    cursor: pointer;
+}
+
+.remember-forgot .forgot{
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.95em;
+}
+
+.btn{
+    width: 100%;
+    height: 45px;
+    border: none;
+    background: #fff;
+    color: #162938;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+}
+
+.login-register{
+    text-align: center;
+    margin-top: 15px;
+    color: #fff;
+}
+
+/* spacing between remember and forgot */
+.remember-forgot .remember{
+    margin-right: 12px;
+}
+
+/* loading screen overlay */
+.loading-screen{
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    z-index: 9999;
+}
+
+.loader{
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 5px solid rgba(255,255,255,0.15);
+    border-top-color: #fff;
+    animation: spin 1s linear infinite;
+    margin-bottom: 12px;
+}
+
+@keyframes spin{
+    to { transform: rotate(360deg); }
+}
+
+
+
+
